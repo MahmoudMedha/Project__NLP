@@ -1,0 +1,110 @@
+CELL 42 ---
+Accuracy: 0.9599644128113879
+              precision    recall  f1-score   support
+
+           0       0.96      0.96      0.96      3309
+           1       0.96      0.96      0.96      3435
+
+    accuracy                           0.96      6744
+   macro avg       0.96      0.96      0.96      6744
+weighted avg       0.96      0.96      0.96      6744
+
+
+
+CELL 43 ---
+
+CELL 44 ---
+Message 1: FREE entry!!! WIN cash now!!! call 09061701461
+Prediction: Spam
+Message 2: Don't forget to bring your notebook tomorrow
+Prediction: Ham
+
+
+CELL 45 ---
+Accuracy: 0.9900652431791221
+              precision    recall  f1-score   support
+
+           0       1.00      0.98      0.99      3309
+           1       0.98      1.00      0.99      3435
+
+    accuracy                           0.99      6744
+   macro avg       0.99      0.99      0.99      6744
+weighted avg       0.99      0.99      0.99      6744
+
+
+
+CELL 46 ---
+Message 1: Congratulations! You won a free iPhone. Click now!
+Prediction: Spam
+Message 2: Don't forget to bring your notebook tomorrow
+Prediction: Ham
+
+
+CELL 47 ---
+Accuracy: 0.984282325029656
+              precision    recall  f1-score   support
+
+           0       0.99      0.98      0.98      3309
+           1       0.98      0.99      0.98      3435
+
+    accuracy                           0.98      6744
+   macro avg       0.98      0.98      0.98      6744
+weighted avg       0.98      0.98      0.98      6744
+
+
+
+CELL 48 ---
+Message 1: Congratulations! You won a free iPhone. Click now!
+Prediction: Spam
+Message 2: Don't forget to bring your notebook tomorrow
+Prediction: Ham
+
+
+CELL 49 ---
+Random Forest Accuracy: 0.9875444839857651
+              precision    recall  f1-score   support
+
+           0       0.99      0.98      0.99      3309
+           1       0.98      0.99      0.99      3435
+
+    accuracy                           0.99      6744
+   macro avg       0.99      0.99      0.99      6744
+weighted avg       0.99      0.99      0.99      6744
+
+
+
+CELL 50 ---
+Message 1: Congratulations! You won a free iPhone. Click now!
+Prediction: Spam
+Message 2: Don't forget to bring your notebook tomorrow
+Prediction: Ham
+
+
+CELL 51 ---
+Accuracy: 0.9991103202846975
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      3309
+           1       1.00      1.00      1.00      3435
+
+    accuracy                           1.00      6744
+   macro avg       1.00      1.00      1.00      6744
+weighted avg       1.00      1.00      1.00      6744
+
+
+
+CELL 52 ---
+📊 All Models Performance:
+
+                 Model  Accuracy  Precision    Recall  F1 Score
+2                  SVM  0.999110   0.998256  1.000000  0.999127
+1  Logistic Regression  0.990065   0.983075  0.997671  0.990319
+3        Random Forest  0.987544   0.984389  0.991266  0.987815
+0          Naive Bayes  0.984282   0.977893  0.991557  0.984678
+4        Decision Tree  0.959964   0.963126  0.958079  0.960595
+
+==================================================
+🏆 Best Model: SVM
+🔥 Best F1 Score: 0.9991
+
+
