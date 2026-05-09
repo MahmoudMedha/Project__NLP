@@ -1,30 +1,70 @@
 # NLP Spam Detection Project
 
-This repository contains an NLP-based spam detection project built on the Enron spam dataset.
+A spam classification project using natural language processing and machine learning models trained on the Enron email dataset.
 
-## Contents
+## Repository Structure
 
-- `Project__NLP.ipynb` - Main notebook with exploration, preprocessing, and model training.
-- `enron_spam_data.csv` - Dataset used for spam classification.
-- `NLP_spam (1)/` - Auxiliary folder with app files, documentation, and additional notebooks.
-- `spam_model_*.pkl` - Exported trained models.
-- `tfidf_vectorizer.pkl` - Saved TF-IDF vectorizer for text transformation.
+- `Project__NLP.ipynb` - Main Jupyter notebook with data exploration, preprocessing, feature engineering, model training, and evaluation.
+- `enron_spam_data.csv` - The dataset containing labeled spam/ham email examples.
+- `NLP_spam (1)/` - Flask web app, documentation, and supporting files.
+  - `app.py` - Flask API for serving predictions from saved models.
+  - `index.html` - App landing page.
+  - `docs.html` - App documentation page.
+  - `requirements.txt` - Python dependencies for the web app.
+  - `models/` - Saved model artifacts and vectorizer used by the app.
+  - `scan_count.txt` - Persistent request counter for the web app.
+- `spam_model_decision_tree.pkl` - Saved decision tree model.
+- `spam_model_logistic_regression.pkl` - Saved logistic regression model.
+- `spam_model_naive_bayes.pkl` - Saved Naive Bayes model.
+- `spam_model_random_forest.pkl` - Saved random forest model.
+- `spam_model_svm.pkl` - Saved SVM model.
+- `tfidf_vectorizer.pkl` - Saved TF-IDF text vectorizer.
 
-## Usage
+## What's Included
+
+- Multiple classification algorithms for spam detection
+- A reusable `TfidfVectorizer` for text preprocessing
+- A Flask API that loads models from `NLP_spam (1)/models/`
+- A small web UI and documentation pages
+
+## Running the Notebook
 
 1. Open `Project__NLP.ipynb` in Jupyter Notebook or JupyterLab.
-2. Run the cells to explore the dataset, preprocess text, train models, and evaluate performance.
-3. Use the saved `.pkl` models and vectorizer for inference or deployment.
+2. Execute the cells to inspect the data, preprocess the text, train classifiers, and evaluate their performance.
 
-## Requirements
+## Running the Flask App
 
-Install the required Python packages listed in `NLP_spam (1)/requirements.txt` if available, or use the following as a starting point:
+1. Open a terminal in `NLP_spam (1)/`.
+2. Install dependencies:
 
 ```bash
-pip install numpy pandas scikit-learn jupyter
+pip install -r "NLP_spam (1)/requirements.txt"
+```
+
+3. Start the app:
+
+```bash
+python "NLP_spam (1)/app.py"
+```
+
+4. Open `http://127.0.0.1:5000/` in a browser.
+
+## API Endpoints
+
+- `GET /` - Serves `index.html`
+- `GET /docs` - Serves `docs.html`
+- `GET /health` - Returns app health and loaded model status
+- `POST /predict` - Predicts spam/ham from JSON payload
+
+Example request:
+
+```bash
+curl -X POST http://127.0.0.1:5000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Free money offer"}'
 ```
 
 ## Notes
 
-- Keep dataset files and model artifacts under version control only if needed; otherwise use `.gitignore` to avoid committing large or generated files.
-- The `NLP_spam (1)/` subfolder contains a small app and static documentation.
+- The app expects `tfidf_vectorizer.pkl` and `spam_model_*.pkl` files in `NLP_spam (1)/models/`.
+- If you want to keep large datasets or model binaries out of version control, add them to `.gitignore`.
