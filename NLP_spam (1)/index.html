@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en" class="dark">
+        <head>
+                <meta charset="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>SpamShield - Predict</title>
+                <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+                <style>
+                        body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+                </style>
+        </head>
+        <body class="min-h-screen bg-slate-950 text-slate-100">
+                <div class="absolute inset-0 -z-10 bg-gradient-to-br from-slate-950 via-slate-950 to-indigo-950/30"></div>
+
+                <header class="border-b border-white/10 bg-slate-950/70 backdrop-blur">
+                        <div class="mx-auto max-w-6xl px-6 py-5 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                        <div class="font-semibold tracking-tight">SpamShield</div>
+                                </div>
+                                <nav class="text-sm text-slate-300 flex gap-4">
+                                        <a class="hover:text-white" href="/">Predict</a>
+                                        <a class="hover:text-white" href="/docs">API Docs</a>
+                                </nav>
+                        </div>
+                </header>
+
+                <main class="mx-auto max-w-6xl px-6 py-10">
+                        <div class="mb-8">
+                                <h1 class="text-3xl font-bold tracking-tight">AI Spam Analysis</h1>
+                                <p class="mt-2 text-slate-300 max-w-2xl">
+                                        Paste email content below. The API will classify it as <span class="text-white font-semibold">spam</span> or <span class="text-white font-semibold">ham</span>.
+                                </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+                                <section class="xl:col-span-7 space-y-5">
+                                        <div class="rounded-2xl border border-white/10 bg-slate-900/40 p-6 shadow-lg relative overflow-hidden">
+                                                <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent pointer-events-none"></div>
+                                                <div class="relative space-y-5">
+                                                        <div>
+                                                                <label for="subject" class="block text-xs font-semibold tracking-widest text-slate-300 uppercase">Email Subject</label>
+                                                                <div class="mt-2">
+                                                                        <input id="subject" type="text" placeholder="Enter subject line..." class="w-full rounded-lg bg-slate-950/60 border border-white/10 text-slate-100 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500/60" />
+                                                                </div>
+                                                        </div>
+
+                                                        <div>
+                                                                <label for="body" class="block text-xs font-semibold tracking-widest text-slate-300 uppercase">Email Body</label>
+                                                                <div class="mt-2">
+                                                                        <textarea id="body" rows="12" placeholder="Paste full raw email content here..." class="w-full rounded-lg bg-slate-950/60 border border-white/10 text-slate-100 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 resize-y"></textarea>
+                                                                </div>
+                                                        </div>
+
+                                                        <div class="pt-2 flex justify-end items-center gap-3">
+                                                                <div id="sendStatus" class="text-sm text-slate-300"></div>
+                                                                <button id="analyzeBtn" class="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-500 text-white px-6 py-3 font-semibold hover:bg-indigo-400 disabled:opacity-60 disabled:cursor-not-allowed">
+                                                                        Analyze Payload
+                                                                </button>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </section>
+
+                                <aside class="xl:col-span-5 space-y-5">
+                                        <div class="rounded-2xl border border-white/10 bg-slate-900/40 p-6 shadow-lg border-l-4 border-l-indigo-400/70 relative overflow-hidden">
+                                                <div class="absolute inset-0 bg-gradient-to-br from-indigo-400/10 to-transparent pointer-events-none"></div>
+                                                <div class="relative">
+                                                        <div class="flex items-center justify-between pb-4 border-b border-white/10">
+                                                                <div>
+                                                                        <div class="text-lg font-semibold">Analysis Result</div>
+                                                                </div>
+                                                        </div>
+
+                                                        <div class="mt-5 space-y-5">
+                                                                <div>
+                                                                        <div class="text-xs font-semibold tracking-widest text-slate-300 uppercase">Predictions</div>
+                                                                        <div id="predictionsEmpty" class="mt-2 text-sm text-slate-300">No result yet</div>
+                                                                        <div id="predictionsTableWrap" class="mt-3 hidden overflow-x-auto rounded-lg border border-white/10 bg-slate-950/40">
+                                                                                <table class="min-w-full text-sm">
+                                                                                        <thead class="text-xs uppercase tracking-widest text-slate-300">
+                                                                                                <tr class="border-b border-white/10">
+                                                                                                        <th class="px-4 py-3 text-left font-semibold">Model</th>
+                                                                                                        <th class="px-4 py-3 text-left font-semibold">Accuracy</th>
+                                                                                                        <th class="px-4 py-3 text-left font-semibold">Prediction</th>
+                                                                                                </tr>
+                                                                                        </thead>
+                                                                                        <tbody id="predictionsBody" class="divide-y divide-white/10"></tbody>
+                                                                                </table>
+                                                                        </div>
+                                                                </div>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </aside>
+                        </div>
+
+                        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+                                <div class="rounded-2xl border border-white/10 bg-slate-900/40 p-5">
+                                        <div class="text-sm font-semibold text-slate-200">Processing Speed</div>
+                                        <div class="mt-3 flex items-end gap-2">
+                                                <div id="latency" class="text-4xl font-bold tracking-tight">—</div>
+                                                <div class="text-slate-400 pb-1">ms</div>
+                                        </div>
+                                        <div class="mt-2 text-sm text-slate-400">Last request latency</div>
+                                </div>
+
+                                <div class="rounded-2xl border border-white/10 bg-slate-900/40 p-5">
+                                                                <div class="text-sm font-semibold text-slate-200">Total Scans</div>
+                                        <div class="mt-3 flex items-end gap-2">
+                                                <div id="scanCount" class="text-4xl font-bold tracking-tight">0</div>
+                                        </div>
+                                                                <div class="mt-2 text-sm text-slate-400">All time</div>
+                                </div>
+
+                                <div class="rounded-2xl border border-white/10 bg-slate-900/40 p-5">
+                                        <div class="text-sm font-semibold text-slate-200">Model Status</div>
+                                        <div class="mt-3 flex items-center gap-2">
+                                                <span id="modelDot" class="h-2.5 w-2.5 rounded-full bg-slate-500"></span>
+                                                <div id="modelStatus" class="text-slate-200">Unknown</div>
+                                        </div>
+                                        <div class="mt-2 text-sm text-slate-400">Loaded from local artifacts</div>
+                                </div>
+                        </section>
+                </main>
+
+                <script>
+                        const subjectEl = document.getElementById("subject");
+                        const bodyEl = document.getElementById("body");
+                        const analyzeBtn = document.getElementById("analyzeBtn");
+                        const sendStatus = document.getElementById("sendStatus");
+                        const predictionsEmpty = document.getElementById("predictionsEmpty");
+                        const predictionsTableWrap = document.getElementById("predictionsTableWrap");
+                        const predictionsBody = document.getElementById("predictionsBody");
+                        const latencyEl = document.getElementById("latency");
+                        const scanCountEl = document.getElementById("scanCount");
+                        const modelDot = document.getElementById("modelDot");
+                        const modelStatus = document.getElementById("modelStatus");
+
+                        function formatAccuracy(value) {
+                                if (typeof value !== "number" || !Number.isFinite(value)) return "—";
+                                return `${(value * 100).toFixed(2)}%`;
+                        }
+
+                        function labelText(label) {
+                                const v = String(label || "").toLowerCase();
+                                if (v === "spam") return "Spam";
+                                if (v === "ham") return "Ham";
+                                if (!v) return "—";
+                                return String(label);
+                        }
+
+                        function pillHtml(row) {
+                                if (row.error) {
+                                        return `<span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-semibold bg-rose-500/15 text-rose-300 border border-rose-500/20" title="${String(row.error).replaceAll('"', '&quot;')}">Error</span>`;
+                                }
+                                const raw = String(row.label || "").toLowerCase();
+                                const text = labelText(row.label);
+                                if (raw === "spam") {
+                                        return `<span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-semibold bg-rose-500/15 text-rose-300 border border-rose-500/20">${text}</span>`;
+                                }
+                                if (raw === "ham") {
+                                        return `<span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/20">${text}</span>`;
+                                }
+                                return `<span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-semibold bg-slate-500/15 text-slate-200 border border-white/10">${text}</span>`;
+                        }
+
+                        function showEmpty(text) {
+                                predictionsBody.innerHTML = "";
+                                predictionsEmpty.textContent = text;
+                                predictionsEmpty.classList.remove("hidden");
+                                predictionsTableWrap.classList.add("hidden");
+                        }
+
+                        function showTable(rows) {
+                                predictionsBody.innerHTML = rows.map((row) => {
+                                        const model = String(row.model || "—");
+                                        const acc = formatAccuracy(row.accuracy);
+                                        return `
+                                                <tr>
+                                                        <td class="px-4 py-3 text-slate-100">${model}</td>
+                                                        <td class="px-4 py-3 text-slate-200">${acc}</td>
+                                                        <td class="px-4 py-3">${pillHtml(row)}</td>
+                                                </tr>
+                                        `;
+                                }).join("");
+                                predictionsEmpty.classList.add("hidden");
+                                predictionsTableWrap.classList.remove("hidden");
+                        }
+
+                        function buildText() {
+                                const subject = (subjectEl.value || "").trim();
+                                const body = (bodyEl.value || "").trim();
+                                if (subject && body) return `${subject} ${body}`;
+                                if (subject) return subject;
+                                return body;
+                        }
+
+                        async function refreshHealth() {
+                                try {
+                                        const res = await fetch("/health");
+                                        const data = await res.json();
+                                        if (res.ok && data.ok) {
+                                                modelDot.className = "h-2.5 w-2.5 rounded-full bg-emerald-400";
+                                                const count = Array.isArray(data.models_loaded) ? data.models_loaded.length : 0;
+                                                modelStatus.textContent = `Active (${count} models)`;
+                                                                                                if (typeof data.total_scans === "number") {
+                                                                                                        scanCountEl.textContent = String(data.total_scans);
+                                                                                                }
+                                        } else {
+                                                modelDot.className = "h-2.5 w-2.5 rounded-full bg-rose-400";
+                                                modelStatus.textContent = "Error";
+                                        }
+                                } catch {
+                                        modelDot.className = "h-2.5 w-2.5 rounded-full bg-rose-400";
+                                        modelStatus.textContent = "Offline";
+                                }
+                        }
+
+                        refreshHealth();
+
+                        analyzeBtn.addEventListener("click", async () => {
+                                const text = buildText();
+                                if (!text) {
+                                        sendStatus.textContent = "Paste an email first.";
+                                        return;
+                                }
+
+                                analyzeBtn.disabled = true;
+                                sendStatus.textContent = "Analyzing...";
+                                showEmpty("No result yet");
+
+                                const start = performance.now();
+                                try {
+                                        const res = await fetch("/predict", {
+                                                method: "POST",
+                                                headers: { "Content-Type": "application/json" },
+                                                body: JSON.stringify({ text }),
+                                        });
+                                        const data = await res.json();
+                                        const ms = Math.round(performance.now() - start);
+                                        latencyEl.textContent = String(ms);
+
+                                        if (!res.ok || !data.ok) {
+                                                showEmpty("Error");
+                                                sendStatus.textContent = data.error || "Request failed.";
+                                                                                                return;
+                                        }
+
+                                                                                if (typeof data.total_scans === "number") {
+                                                                                        scanCountEl.textContent = String(data.total_scans);
+                                                                                }
+
+                                        if (Array.isArray(data.predictions) && data.predictions.length) {
+                                                showTable(data.predictions);
+                                        } else {
+                                                showTable([{ model: "Best", accuracy: null, label: data.label }]);
+                                        }
+
+                                        sendStatus.textContent = "Done.";
+                                } catch (e) {
+                                        showEmpty("Error");
+                                        sendStatus.textContent = "Network error.";
+                                } finally {
+                                        analyzeBtn.disabled = false;
+                                }
+                        });
+                </script>
+        </body>
+</html>
